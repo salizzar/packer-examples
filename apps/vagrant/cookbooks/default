@@ -1,0 +1,28 @@
+#! /usr/bin/env bash
+
+# disable default site
+a2dissite 000-default
+
+# create vhost
+cat > /etc/apache2/sites-available/lamp-php <<LAMP
+<VirtualHost *:80>
+        DocumentRoot /vagrant
+
+        <Directory /vagrant/>
+                Options Indexes FollowSymLinks MultiViews
+                AllowOverride None
+                Order allow,deny
+                allow from all
+        </Directory>
+
+        LogLevel warn
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+LAMP
+
+# enable vhost
+a2ensite lamp-php
+
+# reload apache
+/etc/init.d/apache2 reload

@@ -1,0 +1,88 @@
+{
+  "variables": {
+    "box_ostype":     "debian",
+    "box_osversion":  "7.4.0",
+    "box_nick":       "wheezy",
+    "box_arch":       "x64",
+    "box_type":       "base",
+    "box_memory":     "256",
+    "box_cpus":       "1",
+
+    "iso_arch":       "amd64",
+    "iso_type":       "netinst",
+    "iso_md5":        "e7e9433973f082a297793c3c5010b2c5",
+
+    "ssh_user":       "vagrant",
+    "ssh_pass":       "vagrant",
+    "hostname":       "vagrant-debian-7.4.0",
+    "domain":         "vagrantup.com"
+  },
+
+  "builders": [
+    {
+      "type":               "virtualbox-iso",
+      "vm_name":            "lamp-vagrant",
+      "guest_os_type":      "Debian_64",
+      "disk_size":          "5500",
+
+      "iso_url":            "http://cdimage.debian.org/cdimage/release/{{ user `box_osversion` }}/{{ user `iso_arch` }}/iso-cd/debian-{{ user `box_osversion` }}-{{ user `iso_arch` }}-{{ user `iso_type` }}.iso",
+      "iso_checksum":       "{{ user `iso_md5` }}",
+      "iso_checksum_type":  "md5",
+
+      "http_directory":     "http",
+
+      "ssh_username":       "root",
+      "ssh_password":       "{{ user `ssh_pass` }}",
+      "ssh_wait_timeout":   "100000s",
+
+      "shutdown_command":   "echo {{ user `ssh_user` }} | sudo halt -p",
+
+      "vboxmanage": [
+        [ "modifyvm", "{{ .Name }}", "--memory", "{{ user `box_memory` }}" ],
+        [ "modifyvm", "{{ .Name }}", "--cpus",   "{{ user `box_cpus`   }}" ]
+      ],
+
+      "boot_command": [
+        "<esc> ",
+        "install ",
+        "auto ",
+        "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg ",
+        "locale=en_US ",
+        "keymap=en_US ",
+        "console-setup/ask_detect=false ",
+        "hostname={{ user `hostname` }} ",
+        "domain={{ user `domain` }} ",
+        "passwd/root-password={{ user `ssh_pass` }} ",
+        "passwd/root-password-again={{ user `ssh_pass` }} ",
+        "passwd/user-fullname={{ user `ssh_user` }} ",
+        "passwd/username={{ user `ssh_user` }} ",
+        "passwd/user-password={{ user `ssh_pass` }} ",
+        "passwd/user-password-again={{ user `ssh_pass` }} ",
+        "<enter><wait>"
+      ]
+    }
+  ],
+
+  "provisioners": [
+    {
+      "type":             "shell",
+      "execute_command":  "echo 'root' | sh '{{ .Path }}'",
+      "scripts": [
+        "scripts/lamp/sudoers.sh",
+        "scripts/lamp/sshd.sh",
+        "scripts/lamp/virtualbox.sh",
+        "scripts/lamp/vagrant.sh",
+        "scripts/lamp/apache2.sh",
+        "scripts/lamp/php5.sh",
+        "scripts/lamp/mysql.sh"
+      ]
+    }
+  ],
+
+  "post-processors": [
+    {
+      "type":   "vagrant",
+      "output": "lamp-vagrant.box"
+    }
+  ]
+}
