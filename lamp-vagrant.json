@@ -37,11 +37,6 @@
 
       "shutdown_command":   "echo {{ user `ssh_user` }} | sudo halt -p",
 
-      "vboxmanage": [
-        [ "modifyvm", "{{ .Name }}", "--memory", "{{ user `box_memory` }}" ],
-        [ "modifyvm", "{{ .Name }}", "--cpus",   "{{ user `box_cpus`   }}" ]
-      ],
-
       "boot_command": [
         "<esc> ",
         "install ",
@@ -58,7 +53,14 @@
         "passwd/username={{ user `ssh_user` }} ",
         "passwd/user-password={{ user `ssh_pass` }} ",
         "passwd/user-password-again={{ user `ssh_pass` }} ",
+        "partman-auto/disk string /dev/sda",
+        "finish-install/reboot_in_progress note",
         "<enter><wait>"
+      ],
+
+      "vboxmanage": [
+        [ "modifyvm", "{{ .Name }}", "--memory", "{{ user `box_memory` }}" ],
+        [ "modifyvm", "{{ .Name }}", "--cpus",   "{{ user `box_cpus`   }}" ]
       ]
     }
   ],
