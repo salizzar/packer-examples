@@ -1,0 +1,84 @@
+{
+  "variables": {
+    "box_ostype":     "debian",
+    "box_osversion":  "7.4.0",
+    "box_nick":       "wheezy",
+    "box_arch":       "x64",
+    "box_type":       "base",
+    "box_memory":     "256",
+    "box_cpus":       "1",
+
+    "iso_arch":       "amd64",
+    "iso_type":       "netinst",
+    "iso_md5":        "e7e9433973f082a297793c3c5010b2c5",
+
+    "ssh_user":       "vagrant",
+    "ssh_pass":       "vagrant",
+    "hostname":       "vagrant-debian-7.4.0",
+    "domain":         "vagrantup.com"
+  },
+
+  "builders": [
+    {
+      "type":               "qemu",
+      "vm_name":            "lamp-qemu",
+      "disk_size":          "5500",
+
+      "iso_url":            "http://cdimage.debian.org/cdimage/release/{{ user `box_osversion` }}/{{ user `iso_arch` }}/iso-cd/debian-{{ user `box_osversion` }}-{{ user `iso_arch` }}-{{ user `iso_type` }}.iso",
+      "iso_checksum":       "{{ user `iso_md5` }}",
+      "iso_checksum_type":  "md5",
+
+      "http_directory":     "http",
+
+      "ssh_username":       "root",
+      "ssh_password":       "{{ user `ssh_pass` }}",
+      "ssh_wait_timeout":   "100000s",
+
+      "shutdown_command":   "echo {{ user `ssh_user` }} | sudo halt -p",
+
+      "boot_command": [
+        "<esc> ",
+        "install ",
+        "auto ",
+        "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg ",
+        "locale=en_US ",
+        "keymap=en_US ",
+        "console-setup/ask_detect=false ",
+        "hostname={{ user `hostname` }} ",
+        "domain={{ user `domain` }} ",
+        "passwd/root-password={{ user `ssh_pass` }} ",
+        "passwd/root-password-again={{ user `ssh_pass` }} ",
+        "passwd/user-fullname={{ user `ssh_user` }} ",
+        "passwd/username={{ user `ssh_user` }} ",
+        "passwd/user-password={{ user `ssh_pass` }} ",
+        "passwd/user-password-again={{ user `ssh_pass` }} ",
+        "partman-auto/disk string /dev/vda",
+        "debian-installer/exit/poweroff=true",
+        "<enter><wait>"
+      ],
+
+      "format":         "qcow2",
+      "headless":       "false",
+      "accelerator":    "kvm",
+      "net_device":     "virtio-net",
+      "disk_interface": "virtio",
+
+      "qemuargs": [
+        [ "-m",   "{{ user `box_memory` }}" ],
+        [ "-smp", "{{ user `box_cpus`   }}" ]
+      ]
+    }
+  ],
+
+  "provisioners": [
+    {
+      "type":             "shell",
+      "execute_command":  "echo 'root' | sh '{{ .Path }}'",
+      "scripts": [
+        "scripts/lamp/apache2.sh",
+        "scripts/lamp/php5.sh",
+        "scripts/lamp/mysql.sh"
+      ]
+    }
+  ]
+}
