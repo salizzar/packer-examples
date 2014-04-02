@@ -1,0 +1,11 @@
+#! /usr/bin/env bash
+
+# disable default site
+a2dissite 000-default
+
+# enable vhost
+a2ensite lamp-php
+
+# reload apache
+/etc/init.d/apache2 reload
+
