@@ -1,0 +1,30 @@
+{
+  "builders": [
+    {
+      "type":         "docker",
+      "image":        "debian",
+      "export_path":  "docker-lamp.tar"
+    }
+  ],
+
+  "provisioners": [
+    {
+      "type":             "shell",
+      "execute_command":  "echo 'root' | sh '{{ .Path }}'",
+      "scripts": [
+        "scripts/lamp/apache2.sh",
+        "scripts/lamp/php5.sh",
+        "scripts/lamp/mysql.sh"
+      ]
+    }
+  ],
+
+  "post-processors": [
+    {
+      "type":       "docker-import",
+      "repository": "salizzar/docker-lamp",
+      "tag":        "0.1"
+    }
+  ]
+}
+

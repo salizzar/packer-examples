@@ -1,5 +1,8 @@
 # Cache objects
 packer_cache/
 
+# raw images
+output-*
+
 # For built boxes
 *.box
