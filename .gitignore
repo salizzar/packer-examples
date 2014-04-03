@@ -6,3 +6,6 @@ output-*
 
 # For built boxes
 *.box
+
+# htmls
+*.html
