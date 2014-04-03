@@ -54,7 +54,6 @@
         "passwd/user-password={{ user `ssh_pass` }} ",
         "passwd/user-password-again={{ user `ssh_pass` }} ",
         "partman-auto/disk string /dev/sda",
-        "finish-install/reboot_in_progress note",
         "<enter><wait>"
       ],
 
