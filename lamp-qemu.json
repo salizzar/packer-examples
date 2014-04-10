@@ -65,8 +65,7 @@
 
       "qemuargs": [
         [ "-m",       "{{ user `box_memory` }}" ],
-        [ "-smp",     "{{ user `box_cpus`   }}" ],
-        [ "-display", "none" ]
+        [ "-smp",     "{{ user `box_cpus`   }}" ]
       ]
     }
   ],
