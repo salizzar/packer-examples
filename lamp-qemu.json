@@ -76,9 +76,13 @@
       "type":             "shell",
       "execute_command":  "echo 'root' | sh '{{ .Path }}'",
       "scripts": [
+        "scripts/lamp/sudoers.sh",
+        "scripts/lamp/sshd.sh",
+        "scripts/lamp/vagrant.sh",
         "scripts/lamp/apache2.sh",
         "scripts/lamp/php5.sh",
-        "scripts/lamp/mysql.sh"
+        "scripts/lamp/mysql.sh",
+        "scripts/lamp/create-folder.sh"
       ]
     },
     {
