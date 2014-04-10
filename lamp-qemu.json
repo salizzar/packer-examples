@@ -77,8 +77,19 @@
       "execute_command":  "echo 'root' | sh '{{ .Path }}'",
       "scripts": [
         "scripts/lamp/apache2.sh",
-        "scripts/lamp/php5.sh"
+        "scripts/lamp/php5.sh",
+        "scripts/lamp/mysql.sh"
       ]
+    },
+    {
+      "type":         "file",
+      "source":       "files/lamp-vagrant/vhost",
+      "destination":  "/etc/apache2/sites-available/lamp-php"
+    },
+    {
+      "type":             "shell",
+      "execute_command":  "echo 'root' | sh '{{ .Path }}'",
+      "script":           "scripts/lamp/enable-vhost"
     }
   ]
 }
